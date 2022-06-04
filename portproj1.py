@@ -28,7 +28,8 @@ def first_choice():
             return first_choice()
     
     elif "everything" in first_input.lower():
-        print("Your best bet would be the Minolta Hi-Matic 7S. It has full auto settings but can work without batteries, and has a light meter if you want to shoot manually as well.")
+        print("Your best bet would be the Minolta Hi-Matic 7S.")
+        himatic.more_info()
         return restart_input()
     
     else: 
@@ -51,13 +52,16 @@ def second_choice():
     #choosing point and shoots above results in an int for price range
     elif type(second_input) == int:
         if second_input > 0 and second_input < 50:
-            print("check out the pentax iqzoom")
+            print("Check out the Pentax IQZoom")
+            iqzoom.more_info()
             restart_input()
         elif second_input > 50 and second_input <= 150:
-            print ("check out the olympus stylus")
+            print ("Check out the Olympus Stylus Zoom")
+            stylus.more_info()
             restart_input()
         elif second_input > 150:
-            print ("check out the konica big mini")
+            print ("check out the Konica Big Mini")
+            bigmini.moreinfo()
             restart_input()
         elif second_input <= 0:
             print ("Sorry, I didnt quite get that. Try again")
@@ -67,9 +71,13 @@ def second_choice():
 #if they chose a fixed lens for portraits/landscapes
 def fixed_suggestion():
     if "mech" in fixed_mech_or_batt_input.lower():
-        print ("Olympus 35 RC")
+        print ("You might like the Olympus 35 RC")
+        olympus_rc.more_info()
+        return restart_input
     elif "batt" in fixed_mech_or_batt_input.lower():
-        return #Olympus XA
+        print ("You might like the Olympus XA")
+        olympus_xa.more_info()
+        return restart_input
     else:
         print("Whoops, lets try again. ")
         first_choice()
@@ -77,38 +85,66 @@ def fixed_suggestion():
 #if they chose interchangeable lens for portraits/landscapes
 def inter_suggestion():
     if "mech" in inter_mech_or_batt_input.lower():
-        print ("Nikon FM")
+        print ("How about the Nikon FM?")
+        nikon_fm.more_info()
+        return restart_input
     elif "batt" in inter_mech_or_batt_input.lower():
-        return #Nikon FE
+        print ("How about the Nikon FE?")
+        nikon_fe.more_info()
+        return restart_input
     else:
         print("Whoops, lets try again. ")
         first_choice()
 
 
+#function that asks if the user wants more info on their camera -- calls the repr in the camera class
+
 #class of cameras that identifies the attributes of the cameras
 class Camera:
     
     #here we add some attributes for our camera, which will be referenced as we accept inputs
-    def __init__(self, name, price, type, lens_type, mech_or_batt, uses ):
+    def __init__(self, name, price, type, mech_or_batt, uses ):
         self.name = name
         self.price = price
         self.type = type #rangefinder, slr, point and shoot
-        self.lens_type = lens_type
         self.mech_or_batt = mech_or_batt
         self.uses = uses
 
     #adding __repr__ to provide an option to retrieve some more details about the camera
     def __repr__(self): #need to figure out conditionals for final format
-        return "The {camera} is a {type} camera which is {mech_or_batt}. It is best used for {uses} and can be bought for about {price}".format(camera = self.name, type = self.type, mech_or_batt = self.mech_or_batt, uses = self.uses, price = self.price)
+        return "The {camera} is a {type} camera which is {mech_or_batt}. It is best used for {uses} and can be bought for about ${price}.".format(camera = self.name, type = self.type, mech_or_batt = self.mech_or_batt, uses = self.uses, price = self.price)
         
+    #method to ask user if they want more info about their suggested camera
+    def more_info(self):
+        answer = input("Would you like to learn more about this camera? \n")
+        if "y" in answer:
+            print(self)
+        elif "n" in answer:
+            print ("See ya!")
+        else:
+            print ("Enter yes or no")
+            restart_input()
+
 
 #adding all of the cameras as objects:
-himatic = Camera("Minolta Hi-Matic 7S", 75, "rangefinder","fixed lens", "fully mechanical with optional batteries", "portraits, landacapes, and snapshots. It's a great all around camera" )
+himatic = Camera("Minolta Hi-Matic 7S", 75, "fixed lens rangefinder", "fully mechanical with optional batteries", "portraits, landacapes, and snapshots. It's a great all around camera" )
 
-print (himatic)
+iqzoom = Camera("Pentax IQZoom", 25, "point & shoot", "battery powered", "quick photos and snapshots")
+
+stylus = Camera("Olympus Stylus Zoom", "50 to $100", "point & shoot with a good zoom lens", "battery powered", "quick photos and snapshots")
+
+bigmini = Camera("Konica Big Mini BM-201", "150+", "high-quality fixed lens point & shoot", "battery powered", "quick photos and snapshots with the potential for portraits landscapes, and more" )
+
+olympus_xa = Camera("Olympus XA", 125, "portable fixed lens rangefinder", "battery powered", "portraits, landscapes, and quick photos on the go too")
+
+nikon_fm = Camera("Nikon FM", 125, "interchangeable lens SLR", "fully mechanical with optional batteries", "portraits and landscapes with and has a great selection of lenses")
+
+nikon_fe = Camera("Nikon FE", 150, "interchangeable lens SLR", "battery powered", "portraits and landscapes with and has a great selection of lenses")
+
+olympus_rc = Camera("Olympus 35RC", 100, "small fixed lens rangefinder","fully mechanical with optional batteries", "portraits and landscapes" )
 
 
-"""
+
 print ("Welcome to the best friend of the modern youth: a tool that helps you figure out what film camera you should buy! what an exciting way to kick off your new hobby.\n")
 
 print ("Lets start with a few questions to figure out the right choice for you.\n")
@@ -121,4 +157,3 @@ try:
     fixed_suggestion()
 except:
     inter_suggestion()
-"""
