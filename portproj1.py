@@ -5,20 +5,38 @@ print ("Welcome to the best friend of the modern youth: a tool that helps you fi
 print ("Lets start with a few questions to figure out the right choice for you.\n")
 
 #this function initates a couple of inputs and goes back to the start if it doesnt get an input we can use
-def first_choice():
-    first_input = input("What types of photos do you want to take? (Portraits, landscapes, pics of your friends, quick snapshots: \n")
+#add an option to pick a camera that does everything (minolta himatic)
+def restart_input():
+    restart = input("Would you like to start over? \n")
+    if "y" in restart.lower():
+        return first_choice
+    elif "n" in restart.lower():
+        print ("See ya!")
+        exit()
+    else:
+        print ("Enter yes or no")
+        restart_input()
 
+def first_choice():
+    first_input = input("What types of photos do you want to take? (Portraits, landscapes, pics of your friends, quick snapshots or maybe a little bit of everything: \n")
+
+    #if the person chooses portrait or landscape
     if "portrait" in first_input.lower() or "landscape" in first_input.lower():
         global second_input #called global to reference in the next function
         second_input = input("Nice. Do you wand a camera with a fixed lens or do you want to be able to switch lenses? \n")
 
+    #if they choose friends or snapshots
     elif "friends" in first_input.lower() or "snap" in first_input.lower():
         try:
-             second_input = int(input("You're probably best off with a point and shoot camera. What's your price range? \n"))
+             second_input = int(input("You're probably best off with a point and shoot camera. What's your budget? \n"))
         except: 
-            print ("Please make sure to enter a numerical value")
+            print ("Please make sure to enter a numerical value (without a $)")
             return first_choice()
-        
+    
+    elif "everything" in first_input.lower():
+        print("Your best bet would be the Minolta Hi-Matic 7S. It has full auto settings but can work without batteries, and has a light meter if you want to shoot manually as well.")
+        return restart_input()
+    
     else: 
         print("Sorry, I didnt quite get that. Try again")
         return first_choice()
@@ -27,13 +45,17 @@ first_choice()
 
 
 def second_choice():
+    # an input of portraits or landscapes results in a string
     if type(second_input) == str:
-        global mech_or_batt_input
+        global fixed_mech_or_batt_input
+        global inter_mech_or_batt_input
         if "fixed" in second_input.lower():
-            mech_or_batt_input = input("Fixed lens it is. Now, are you interested in a fully mechanical camera, or one that relies on batteries? \n")
-
+            fixed_mech_or_batt_input = input("Fixed lens it is. Now, are you interested in a fully mechanical camera, or one that relies on batteries? \n")
+   
         elif "switch" in second_input.lower() or "lenses" in second_input.lower():
-            mech_or_batt_input = input("So you'd prefer something with interchangeable lenses. Would you prefer battery powered or fully mechanical? \n")
+            inter_mech_or_batt_input = input("So you'd prefer something with interchangeable lenses. Would you prefer battery powered or fully mechanical? \n")
+
+    #choosing point and shoots above results in an int for price range
     elif type(second_input) == int:
         if second_input > 0 and second_input < 50:
             print("check out the pentax iqzoom")
@@ -47,6 +69,30 @@ def second_choice():
 
 second_choice()
 
+#if they chose a fixed lens for portraits/landscapes
+def fixed_suggestion():
+    if "mech" in fixed_mech_or_batt_input.lower():
+        print ("Olympus 35 RC")
+    elif "batt" in fixed_mech_or_batt_input.lower():
+        return #Olympus XA
+    else:
+        print("Whoops, lets try again. ")
+        first_choice()
+
+#if they chose interchangeable lens for portraits/landscapes
+def inter_suggestion():
+    if "mech" in inter_mech_or_batt_input.lower():
+        print ("Nikon FM")
+    elif "batt" in inter_mech_or_batt_input.lower():
+        return #Nikon FE
+    else:
+        print("Whoops, lets try again. ")
+        first_choice()
+
+try:
+    fixed_suggestion()
+except:
+    inter_suggestion()
 
 
 #class of cameras that identifies the attributes of the cameras
