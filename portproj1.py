@@ -54,10 +54,10 @@ def second_choice():
             print("check out the pentax iqzoom")
             restart_input()
         elif second_input > 50 and second_input <= 150:
-            return #check out the olympus stylus
+            print ("check out the olympus stylus")
             restart_input()
         elif second_input > 150:
-            return # check out the konica big mini
+            print ("check out the konica big mini")
             restart_input()
         elif second_input <= 0:
             print ("Sorry, I didnt quite get that. Try again")
@@ -89,25 +89,26 @@ def inter_suggestion():
 class Camera:
     
     #here we add some attributes for our camera, which will be referenced as we accept inputs
-    def __init__(self, name, price, type, lens_type, mech_or_batt, af, portraits, landscapes, friends, snapshots, ):
+    def __init__(self, name, price, type, lens_type, mech_or_batt, uses ):
         self.name = name
         self.price = price
         self.type = type #rangefinder, slr, point and shoot
         self.lens_type = lens_type
         self.mech_or_batt = mech_or_batt
-        self.portraits = portraits
-        self.landscapes = landscapes
-        self.friends = friends
-        self.snapshots = snapshots
+        self.uses = uses
 
     #adding __repr__ to provide an option to retrieve some more details about the camera
-    """def __repr__(self): #need to figure out conditionals for final format
-        return "The {camera} is a {type} camera which is {mech_or_batt}. It is best used for {x}, {y}, and {z}. It can be bought for about {price}".format(camera = self.camera, type = self.type, mech_or_batt = self.mech_or_batt,  )
-        """
+    def __repr__(self): #need to figure out conditionals for final format
+        return "The {camera} is a {type} camera which is {mech_or_batt}. It is best used for {uses} and can be bought for about {price}".format(camera = self.name, type = self.type, mech_or_batt = self.mech_or_batt, uses = self.uses, price = self.price)
+        
 
-#need to add in cameras and their classes, research how to make a flow chart type of thing 
+#adding all of the cameras as objects:
+himatic = Camera("Minolta Hi-Matic 7S", 75, "rangefinder","fixed lens", "fully mechanical with optional batteries", "portraits, landacapes, and snapshots. It's a great all around camera" )
+
+print (himatic)
 
 
+"""
 print ("Welcome to the best friend of the modern youth: a tool that helps you figure out what film camera you should buy! what an exciting way to kick off your new hobby.\n")
 
 print ("Lets start with a few questions to figure out the right choice for you.\n")
@@ -120,3 +121,4 @@ try:
     fixed_suggestion()
 except:
     inter_suggestion()
+"""
