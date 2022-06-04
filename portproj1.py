@@ -1,15 +1,9 @@
 #Command Line prortfolio project
 
-print ("Welcome to the best friend of the modern youth: a tool that helps you figure out what film camera you should buy! what an exciting way to kick off your new hobby.\n")
-
-print ("Lets start with a few questions to figure out the right choice for you.\n")
-
-#this function initates a couple of inputs and goes back to the start if it doesnt get an input we can use
-#add an option to pick a camera that does everything (minolta himatic)
 def restart_input():
     restart = input("Would you like to start over? \n")
     if "y" in restart.lower():
-        return first_choice
+        return first_choice()
     elif "n" in restart.lower():
         print ("See ya!")
         exit()
@@ -41,8 +35,6 @@ def first_choice():
         print("Sorry, I didnt quite get that. Try again")
         return first_choice()
 
-first_choice()
-
 
 def second_choice():
     # an input of portraits or landscapes results in a string
@@ -54,20 +46,23 @@ def second_choice():
    
         elif "switch" in second_input.lower() or "lenses" in second_input.lower():
             inter_mech_or_batt_input = input("So you'd prefer something with interchangeable lenses. Would you prefer battery powered or fully mechanical? \n")
+        
 
     #choosing point and shoots above results in an int for price range
     elif type(second_input) == int:
         if second_input > 0 and second_input < 50:
             print("check out the pentax iqzoom")
+            restart_input()
         elif second_input > 50 and second_input <= 150:
             return #check out the olympus stylus
+            restart_input()
         elif second_input > 150:
             return # check out the konica big mini
+            restart_input()
         elif second_input <= 0:
             print ("Sorry, I didnt quite get that. Try again")
             return first_choice()
 
-second_choice()
 
 #if they chose a fixed lens for portraits/landscapes
 def fixed_suggestion():
@@ -88,11 +83,6 @@ def inter_suggestion():
     else:
         print("Whoops, lets try again. ")
         first_choice()
-
-try:
-    fixed_suggestion()
-except:
-    inter_suggestion()
 
 
 #class of cameras that identifies the attributes of the cameras
@@ -118,3 +108,15 @@ class Camera:
 #need to add in cameras and their classes, research how to make a flow chart type of thing 
 
 
+print ("Welcome to the best friend of the modern youth: a tool that helps you figure out what film camera you should buy! what an exciting way to kick off your new hobby.\n")
+
+print ("Lets start with a few questions to figure out the right choice for you.\n")
+
+first_choice()
+
+second_choice()
+
+try:
+    fixed_suggestion()
+except:
+    inter_suggestion()
