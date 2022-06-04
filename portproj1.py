@@ -1,5 +1,13 @@
 #Command Line prortfolio project
 
+from bs4 import BeautifulSoup
+import requests, json, lxml
+
+headers = {
+    "User-Agent":
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36"
+}
+
 
 def restart_input():
     restart = input("Would you like to start over? \n")
@@ -112,45 +120,70 @@ def suggestion(choice):
 class Camera:
     
     #here we add some attributes for our camera, which will be referenced as we accept inputs
-    def __init__(self, name, price, type, mech_or_batt, uses ):
+    def __init__(self, name, price, type, mech_or_batt, uses, ebay_link ):
         self.name = name
         self.price = price
         self.type = type #rangefinder, slr, point and shoot
         self.mech_or_batt = mech_or_batt
         self.uses = uses
+        self.ebay_link = ebay_link
 
     #adding __repr__ to provide an option to retrieve some more details about the camera
     def __repr__(self): #need to figure out conditionals for final format
-        return "The {camera} is a {type} camera which is {mech_or_batt}. It is best used for {uses} and can be bought for about ${price}.".format(camera = self.name, type = self.type, mech_or_batt = self.mech_or_batt, uses = self.uses, price = self.price)
+        return "The {camera} is a {type} camera which is {mech_or_batt}. It is best used for {uses}. The average price of this camera on ebay is $".format(camera = self.name, type = self.type, mech_or_batt = self.mech_or_batt, uses = self.uses)
         
     #method to ask user if they want more info about their suggested camera
     def more_info(self):
         answer = input("Would you like to learn more about this camera? \n")
         if "y" in answer:
-            print(self)
+            print (str(self) + self.get_prices())
         elif "n" in answer:
             print ("Happy buying!")
         else:
             print ("Enter yes or no")
             restart_input()
 
+    def get_prices(self):
+        html = requests.get(self.ebay_link, headers=headers).text
+        soup = BeautifulSoup(html, 'lxml')
+        data = []
+
+        for item in soup.select('.s-item__wrapper.clearfix'):
+            title = item.select_one('.s-item__title').text
+            link = item.select_one('.s-item__link')['href']
+            try:
+                price = item.select_one('.s-item__price').text
+            except:
+                price = None
+            data.append(price)
+        
+        camera_prices = []
+        for i in data:
+            try:
+                camera_prices.append(int(float(i[1:])))
+            except:
+                pass
+
+        average = int(sum(camera_prices) / len(camera_prices))
+        return str(average)
+
 
 #adding all of the cameras as objects:
-himatic = Camera("Minolta Hi-Matic 7S", 75, "fixed lens rangefinder", "fully mechanical with optional batteries", "portraits, landacapes, and snapshots. It's a great all around camera" )
+himatic = Camera("Minolta Hi-Matic 7S", 75, "fixed lens rangefinder", "fully mechanical with optional batteries", "portraits, landacapes, and snapshots. It's a great all around camera", "https://www.ebay.com/sch/i.html?_from=R40&_nkw=minolta+hi-matic+7s&_sacat=0&rt=nc&LH_BIN=1")
 
-iqzoom = Camera("Pentax IQZoom", 25, "point & shoot", "battery powered", "quick photos and snapshots")
+iqzoom = Camera("Pentax IQZoom", 25, "point & shoot", "battery powered", "quick photos and snapshots", "https://www.ebay.com/sch/i.html?_from=R40&_trksid=p2334524.m570.l1313&_nkw=pentax+iqzoom&_sacat=0&LH_TitleDesc=0&rt=nc&_odkw=minolta+hi-matic+7s&_osacat=0&LH_BIN=1")
 
-stylus = Camera("Olympus Stylus Zoom", "50 to $100", "point & shoot with a good zoom lens", "battery powered", "quick photos and snapshots")
+stylus = Camera("Olympus Stylus Zoom", "50 to $100", "point & shoot with a good zoom lens", "battery powered", "quick photos and snapshots", "https://www.ebay.com/sch/i.html?_from=R40&_trksid=p2334524.m570.l1313&_nkw=olympus+stylus+zoom&_sacat=0&LH_TitleDesc=0&_odkw=pentax+iqzoom&_osacat=0&LH_BIN=1")
 
-bigmini = Camera("Konica Big Mini BM-201", "150+", "high-quality fixed lens point & shoot", "battery powered", "quick photos and snapshots with the potential for portraits landscapes, and more" )
+bigmini = Camera("Konica Big Mini BM-201", "150+", "high-quality fixed lens point & shoot", "battery powered", "quick photos and snapshots with the potential for portraits landscapes, and more", "https://www.ebay.com/sch/i.html?_from=R40&_trksid=p2334524.m570.l1313&_nkw=konica+big+mini+bm-201&_sacat=0&LH_TitleDesc=0&_odkw=olympus+stylus+zoom&_osacat=0&LH_BIN=1" )
 
-olympus_xa = Camera("Olympus XA", 125, "portable fixed lens rangefinder", "battery powered", "portraits, landscapes, and quick photos on the go too")
+olympus_xa = Camera("Olympus XA", 125, "portable fixed lens rangefinder", "battery powered", "portraits, landscapes, and quick photos on the go too", "https://www.ebay.com/sch/i.html?_from=R40&_trksid=p2334524.m570.l1313&_nkw=olympus+xa&_sacat=0&LH_TitleDesc=0&_odkw=konica+big+mini+bm-201&_osacat=0&LH_BIN=1")
 
-nikon_fm = Camera("Nikon FM", 125, "interchangeable lens SLR", "fully mechanical with optional batteries", "portraits and landscapes with and has a great selection of lenses")
+nikon_fm = Camera("Nikon FM", 125, "interchangeable lens SLR", "fully mechanical with optional batteries", "portraits and landscapes with and has a great selection of lenses", 'https://www.ebay.com/sch/i.html?_from=R40&_nkw=nikon+fe&_sacat=0&Model=Nikon%2520FE&_dcat=15230&rt=nc&LH_BIN=1')
 
-nikon_fe = Camera("Nikon FE", 150, "interchangeable lens SLR", "battery powered", "portraits and landscapes with and has a great selection of lenses")
+nikon_fe = Camera("Nikon FE", 150, "interchangeable lens SLR", "battery powered", "portraits and landscapes with and has a great selection of lenses", "https://www.ebay.com/sch/i.html?_from=R40&_trksid=p2334524.m570.l1313&_nkw=nikon+fe&_sacat=0&LH_TitleDesc=0&_odkw=olympus+xa&_osacat=0&LH_BIN=1")
 
-olympus_rc = Camera("Olympus 35RC", 100, "small fixed lens rangefinder","fully mechanical with optional batteries", "portraits and landscapes" )
+olympus_rc = Camera("Olympus 35RC", 100, "small fixed lens rangefinder","fully mechanical with optional batteries", "portraits and landscapes", "https://www.ebay.com/sch/i.html?_from=R40&_trksid=p2334524.m570.l1313&_nkw=olympus+35+rc&_sacat=0&LH_TitleDesc=0&_odkw=nikon+fe&_osacat=0&LH_BIN=1" )
 
 
 #this is where we actully initiate the sequence of all of he functions, starting with two print statements.
@@ -164,3 +197,4 @@ def script():
     suggestion(second_choice(first_choice()))
 
 script()
+
